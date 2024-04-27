@@ -1,0 +1,4 @@
+sent_msgs:
+   ros__parameters:
+      device_id: 123
+      command_id: 101
