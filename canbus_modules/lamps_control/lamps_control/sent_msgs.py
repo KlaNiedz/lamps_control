@@ -11,6 +11,10 @@ class SentCanbusMessages(Node):
             parameters=[
                 ('device_id', 0),
                 ('command_id', 0),
+                ('green', 10000),
+                ('yellow', 10000),
+                ('red', 10000),
+                ('blue', 10000),
         ])
         self.my_data = 0
 
@@ -25,14 +29,12 @@ class SentCanbusMessages(Node):
             String, topic, self.topic_callback, 10)
 
         self.publisher = self.create_publisher(Frame, self.send_topic, 10)
-        # (self.my_device_id, self.my_command_id, self.my_data) = self.get_parameters(['device_id', 'command_id', 'data'])
         self.my_device_id = self.get_parameter('device_id').value
         self.my_command_id = self.get_parameter('command_id').value
-        # self.my_data = str(self.get_parameter('data').value)
-        # self.publisher_locked = self.create_publisher(Frame, 'can_frames_locked', 10)
-        # self.publisher_idle = self.create_publisher(Frame, 'can_frames_idle', 10)
-        # self.publisher_joy_diff_drive = self.create_publisher(Frame, 'can_frames_joy_diff_drive', 10)
-        # self.publisher_none= self.create_publisher(Frame, 'can_frames_none', 10)
+        self.my_green = str(self.get_parameter('green').value)
+        self.my_yellow= str(self.get_parameter('yellow').value)
+        self.my_blue = str(self.get_parameter('blue').value)
+        self.my_red = str(self.get_parameter('red').value)
 
 
     def publish_can_frame(self, data_to_msg, frame: Frame = None):
@@ -44,34 +46,36 @@ class SentCanbusMessages(Node):
         msg.data = [int(data_to_msg[i]) if i < len(data_to_msg) else 0 for i in range(8)]
 
         self.publisher.publish(msg)
-        # self.get_logger().info("Published CAN frame %s.", str(self.my_data))
         self.get_logger().info(f"Published CAN frame {data_to_msg}")
 
     def topic_callback(self, msg):
         if msg.data == "Locked":
-            self.my_data = 10100
+            self.my_blue= 11111
+            self.my_data = 10001
+            self.publish_can_frame(str(self.my_data))
         elif msg.data == "__none":
-            self.my_data = 10010
-        elif msg.data == "joy_diff_drive":
-            self.my_data = 10000
-        elif msg.data == "autonomic":
+            self.my_red= 11111
             self.my_data = 11000
-        else:
-            self.my_data = 11011
-        self.publish_can_frame(str(self.my_data))
+            self.publish_can_frame(str(self.my_data))
+        elif msg.data == "joy_diff_drive":
+            self.my_green = 11111
+            self.my_data = 10100
+            self.publish_can_frame(str(self.my_data))
+        elif msg.data == "autonomic":
+            self.my_yellow = 11111
+            self.my_data = 10010
+            self.publish_can_frame(str(self.my_data))
+        
 
 
         
 
 def main(args=None):
     rclpy.init(args=args)
-    # try:
     sent_canbus_messages = SentCanbusMessages()
-    # sent_canbus_messages = SentCanbusMessages()
     rclpy.spin(sent_canbus_messages)
     sent_canbus_messages.destroy_node()
     rclpy.shutdown()
-    # except rclpy.ROSInterruptException:
-    #     pass
+
 if __name__ == '__main__':
     main()
