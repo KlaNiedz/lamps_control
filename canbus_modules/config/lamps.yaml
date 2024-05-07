@@ -2,7 +2,8 @@ sent_msgs:
    ros__parameters:
       device_id: 123
       command_id: 101
-      green: 10000
-      yellow: 10000
-      blue: 10000
-      red: 10000
+      green: 0
+      yellow: 0
+      blue: 0
+      red: 0
+      beeper: 0

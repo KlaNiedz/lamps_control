@@ -11,10 +11,11 @@ class SentCanbusMessages(Node):
             parameters=[
                 ('device_id', 0),
                 ('command_id', 0),
-                ('green', 10000),
-                ('yellow', 10000),
-                ('red', 10000),
-                ('blue', 10000),
+                ('green', 0),
+                ('yellow', 0),
+                ('red', 0),
+                ('blue', 0),
+                ('beeper', 0)
         ])
         self.my_data = 0
 
@@ -35,6 +36,7 @@ class SentCanbusMessages(Node):
         self.my_yellow= str(self.get_parameter('yellow').value)
         self.my_blue = str(self.get_parameter('blue').value)
         self.my_red = str(self.get_parameter('red').value)
+        self.my_beeper = str(self.get_parameter('beeper').value)
 
 
     def publish_can_frame(self, data_to_msg, frame: Frame = None):
@@ -50,21 +52,19 @@ class SentCanbusMessages(Node):
 
     def topic_callback(self, msg):
         if msg.data == "Locked":
-            self.my_blue= 11111
-            self.my_data = 10001
-            self.publish_can_frame(str(self.my_data))
+            self.my_blue= 1
+
         elif msg.data == "__none":
-            self.my_red= 11111
-            self.my_data = 11000
-            self.publish_can_frame(str(self.my_data))
+            self.my_red= 1
+
         elif msg.data == "joy_diff_drive":
-            self.my_green = 11111
-            self.my_data = 10100
-            self.publish_can_frame(str(self.my_data))
+            self.my_green = 1
+
         elif msg.data == "autonomic":
-            self.my_yellow = 11111
-            self.my_data = 10010
-            self.publish_can_frame(str(self.my_data))
+            self.my_yellow = 1
+
+        self.my_data  = [self.my_blue, self.my_green, self.my_yellow, self.my_red, self.my_beeper]
+        self.publish_can_frame(self.my_data)
         
 
 
