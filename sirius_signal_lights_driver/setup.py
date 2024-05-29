@@ -3,7 +3,7 @@ import os
 from glob import glob
 from setuptools import setup
 
-package_name = 'lamps_control'
+package_name = 'sirius_signal_lights_driver'
 
 setup(
     name=package_name,
@@ -25,7 +25,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'sent_msgs = lamps_control.sent_msgs:main'
+            'sent_msgs = sirius_signal_lights_driver.sent_msgs:main'
         ],
     },
     
