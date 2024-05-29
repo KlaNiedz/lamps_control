@@ -67,9 +67,6 @@ class SentCanbusMessages(Node):
         self.publish_can_frame(self.my_data)
         
 
-
-        
-
 def main(args=None):
     rclpy.init(args=args)
     sent_canbus_messages = SentCanbusMessages()
